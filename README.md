@@ -51,17 +51,17 @@ cp .env.example .env
 
 ```bash
 python main.py
-# API available at http://localhost:8000
+# API available at http://localhost:8328
 ```
 
 ### 4. Test the API
 
 ```bash
 # Health check
-curl http://localhost:8000/health
+curl http://localhost:8328/health
 
 # Scrape
-curl -X POST http://localhost:8000/scrape \
+curl -X POST http://localhost:8328/scrape \
   -H "X-API-Key: your-key" \
   -H "Content-Type: application/json" \
   -d '{
@@ -96,7 +96,7 @@ In your Coolify dashboard:
 ### Step 2 — Configure the port
 
 In the application settings:
-- **Port:** `8000`
+- **Port:** `8328`
 
 Coolify reads `coolify.json` for this, but confirm it's set in the UI.
 
@@ -242,7 +242,7 @@ Changes take effect after redeployment.
 | Variable | Default | Description |
 |---|---|---|
 | `OLX_API_KEY` | — | **Required.** Auth key for all API requests |
-| `PORT` | `8000` | Injected by Coolify automatically |
+| `PORT` | `8328` | Injected by Coolify automatically |
 | `DEBUG` | `false` | Enable Flask debug mode (never use in production) |
 | `GUNICORN_TIMEOUT` | `120` | Request timeout in seconds — increase if scrapes time out |
 | `PAGE_TIMEOUT_MS` | `30000` | Browser page load timeout (milliseconds) |

@@ -29,13 +29,13 @@ COPY . .
 
 # ── Health check — Coolify uses this to verify the container is up ────────────
 HEALTHCHECK --interval=30s --timeout=10s --start-period=20s --retries=3 \
-    CMD curl -f http://localhost:${PORT:-8000}/health || exit 1
+    CMD curl -f http://localhost:${PORT:-8328}/health || exit 1
 
 # ── Runtime ───────────────────────────────────────────────────────────────────
 # PORT is injected by Coolify automatically
 # GUNICORN_TIMEOUT can be overridden in Coolify env vars
 CMD gunicorn main:app \
-    --bind 0.0.0.0:${PORT:-8000} \
+    --bind 0.0.0.0:${PORT:-8328} \
     --workers 1 \
     --timeout ${GUNICORN_TIMEOUT:-120} \
     --keep-alive 5 \

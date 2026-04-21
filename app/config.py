@@ -12,7 +12,7 @@ API_KEY = os.environ.get("OLX_API_KEY", "dev-insecure-key-change-me")
 
 # ── Server ───────────────────────────────────────────────────────────────────
 HOST = os.environ.get("HOST", "0.0.0.0")
-PORT = int(os.environ.get("PORT", 8000))
+PORT = int(os.environ.get("PORT", 8328))
 DEBUG = os.environ.get("DEBUG", "false").lower() == "true"
 
 # ── Scraper behaviour ────────────────────────────────────────────────────────

@@ -1,5 +1,5 @@
 {
-  "port": 8000,
+  "port": 8328,
   "healthcheck": {
     "path": "/health",
     "interval": 30,
