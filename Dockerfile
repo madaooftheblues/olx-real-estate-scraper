@@ -10,7 +10,7 @@ RUN apt-get update && apt-get install -y \
     libxdamage1 libxfixes3 libxrandr2 libgbm1 \
     libpango-1.0-0 libpangocairo-1.0-0 \
     libgtk-3-0 libx11-xcb1 libx11-6 \
-    fonts-liberation fonts-noto-color-emoji \
+    fonts-liberation fonts-noto-color-emoji libasound2 \
     --no-install-recommends && rm -rf /var/lib/apt/lists/*
 
 # ── App setup ─────────────────────────────────────────────────────────────────
