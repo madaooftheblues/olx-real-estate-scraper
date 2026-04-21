@@ -24,12 +24,35 @@ from app.config import (
 )
 
 BROWSER_ARGS = [
+    # Sandbox — must be off in containers (no user namespace support)
     "--no-sandbox",
+    "--disable-setuid-sandbox",
+
+    # Memory / IPC — critical in Docker
+    "--disable-dev-shm-usage",          # /dev/shm is too small in most containers
+    "--disable-shared-memory-files",    # Avoids shm issues entirely
+
+    # GPU — no display server in container
+    "--disable-gpu",
+    "--disable-software-rasterizer",
+
+    # Audio / dbus — not available in container, suppress errors
+    "--disable-audio-output",
+    "--disable-dbus",
+
+    # Stability — DO NOT use --single-process (crashes newer Chromium)
+    "--no-zygote",                      # Safer alternative to --single-process
+
+    # Automation fingerprint suppression
     "--disable-blink-features=AutomationControlled",
     "--disable-infobars",
-    "--disable-dev-shm-usage",
-    "--disable-gpu",
-    "--single-process",            # Required on Render/Railway free tier
+
+    # Misc hardening for headless container
+    "--disable-extensions",
+    "--disable-background-networking",
+    "--disable-sync",
+    "--metrics-recording-only",
+    "--mute-audio",
 ] + BROWSER_ARGS_EXTRA
 
 
