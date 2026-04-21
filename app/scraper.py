@@ -162,6 +162,53 @@ def generate_ref_id(existing_ids, start_from=0):
     return f"{REF_PREFIX}{str(next_num).zfill(REF_PADDING)}"
 
 
+# ── Date normalisation ───────────────────────────────────────────────────────
+
+# All Polish month names OLX uses, genitive case (how they appear in dates)
+_POLISH_MONTHS = {
+    "stycznia": 1,  "lutego": 2,   "marca": 3,
+    "kwietnia": 4,  "maja": 5,     "czerwca": 6,
+    "lipca": 7,     "sierpnia": 8, "września": 9,
+    "października": 10, "listopada": 11, "grudnia": 12,
+}
+
+def parse_listing_date(raw: str) -> str:
+    """
+    Convert OLX raw date string to DD/MM/YY format.
+
+    Handles:
+      "Dzisiaj o 00:38"       -> today's date e.g. 22/04/26
+      "20 kwietnia 2026"      -> 20/04/26
+      "5 maja 2026"           -> 05/05/26
+      Anything unrecognised   -> today's date as fallback
+    """
+    today = date.today()
+
+    if not raw or raw == "N/A":
+        return today.strftime("%d/%m/%y")
+
+    text = raw.strip().lower()
+
+    # "Dzisiaj o HH:MM" — listing posted today
+    if text.startswith("dzisiaj"):
+        return today.strftime("%d/%m/%y")
+
+    # "D monthname YYYY" e.g. "20 kwietnia 2026"
+    parts = text.split()
+    if len(parts) == 3:
+        try:
+            day   = int(parts[0])
+            month = _POLISH_MONTHS.get(parts[1])
+            year  = int(parts[2])
+            if month:
+                return date(year, month, day).strftime("%d/%m/%y")
+        except (ValueError, TypeError):
+            pass
+
+    # Fallback — return today so field is never empty
+    return today.strftime("%d/%m/%y")
+
+
 # ── Card extraction ───────────────────────────────────────────────────────────
 
 def _extract_fields(card) -> dict:
@@ -184,10 +231,12 @@ def _extract_fields(card) -> dict:
         location_date = card.locator("[data-testid='location-date']").first.inner_text().strip()
         parts        = location_date.split(" - ")
         address      = parts[0].strip() if parts else "N/A"
-        listing_date = parts[1].strip() if len(parts) > 1 else str(date.today())
+        raw_date     = parts[1].strip() if len(parts) > 1 else ""
     except Exception:
-        address      = "N/A"
-        listing_date = str(date.today())
+        address  = "N/A"
+        raw_date = ""
+
+    listing_date = parse_listing_date(raw_date)
 
     area = "N/A"
     try:
