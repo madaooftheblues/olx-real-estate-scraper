@@ -1,0 +1,13 @@
+{
+  "port": 8000,
+  "healthcheck": {
+    "path": "/health",
+    "interval": 30,
+    "timeout": 10,
+    "retries": 3,
+    "start_period": 20
+  },
+  "build": {
+    "dockerfile": "Dockerfile"
+  }
+}
