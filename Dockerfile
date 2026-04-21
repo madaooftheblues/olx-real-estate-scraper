@@ -4,7 +4,6 @@ FROM python:3.11-slim
 # ── System deps for Playwright/Chromium ──────────────────────────────────────
 RUN apt-get update && apt-get install -y \
     wget curl gnupg ca-certificates \
-    # Core Chromium libs
     libnss3 libnspr4 \
     libatk1.0-0 libatk-bridge2.0-0 \
     libcups2 libdrm2 \
@@ -13,9 +12,7 @@ RUN apt-get update && apt-get install -y \
     libpango-1.0-0 libpangocairo-1.0-0 \
     libgtk-3-0 libx11-6 libx11-xcb1 libxcb1 \
     libxext6 libxrender1 \
-    # Font support
     fonts-liberation fonts-noto-color-emoji \
-    # Audio stub — prevents ALSA warnings crashing the process
     libasound2 \
     --no-install-recommends && rm -rf /var/lib/apt/lists/*
 
@@ -25,11 +22,15 @@ WORKDIR /app
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Pin Chromium to a known path for container stability
 ENV PLAYWRIGHT_BROWSERS_PATH=/ms-playwright
 RUN playwright install chromium
 
 COPY . .
+
+# ── Persistent storage for cookies ───────────────────────────────────────────
+# Mount a Coolify volume at /data so cookies survive container restarts/redeploys
+# Coolify dashboard: Storages → Add → /data
+RUN mkdir -p /data
 
 # ── Health check ──────────────────────────────────────────────────────────────
 HEALTHCHECK --interval=30s --timeout=10s --start-period=20s --retries=3 \
