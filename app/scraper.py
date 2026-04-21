@@ -269,6 +269,15 @@ def scrape_url(page, url: str, only_new: bool = True) -> list:
         except Exception:
             pass
 
+        # Read the active category from the filter dropdown — once per page
+        try:
+            category = page.locator(
+                "[data-testid='category-dropdown'] .css-ydag0f"
+            ).first.inner_text().strip()
+        except Exception:
+            category = "N/A"
+        print(f"     Category: {category}")
+
         cards     = page.locator("div[data-cy='l-card']").all()
         new_count = 0
         print(f"     {len(cards)} cards found")
@@ -277,6 +286,7 @@ def scrape_url(page, url: str, only_new: bool = True) -> list:
             try:
                 result = extract_card(card) if only_new else extract_card_all(card)
                 if result:
+                    result["category"] = category
                     listings.append(result)
                     new_count += 1
             except Exception as e:
