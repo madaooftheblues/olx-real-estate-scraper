@@ -1,0 +1,35 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+*.egg-info/
+dist/
+build/
+
+# Virtual environments
+venv/
+env/
+.venv/
+
+# Local dev
+.env
+results.json
+*.json
+!coolify.json
+
+# Tests
+tests/
+.pytest_cache/
+
+# Git
+.git/
+.gitignore
+
+# Docs
+README.md
+
+# Platform configs (not needed inside the container)
+railway.toml
+render.yaml
